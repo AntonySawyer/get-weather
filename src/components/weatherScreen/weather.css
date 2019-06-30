@@ -1,0 +1,13 @@
+.weatherWrap {
+  margin-top: 30px;
+}
+
+.weatherText {
+  font-size: 32px;
+}
+
+.weatherText::after {
+  content: 'c';
+  vertical-align: super;
+  font-size: 16px;
+}
