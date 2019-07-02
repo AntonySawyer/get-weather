@@ -6,7 +6,7 @@ export default (props) => {
   return (
     <section className="providerPicker">
       <label htmlFor="providerPicker"><i className="fas fa-satellite-dish"></i> </label>
-      <select id="providerPicker" onChange={() => props.onChange()} defaultValue={props.default}>
+      <select id="providerPicker" onChange={() => props.handleInput('provider', '#providerPicker')} defaultValue={props.default}>
         <option value="owm">Open Weather Map</option>
         <option value="wb">WeatherBit</option>
       </select>

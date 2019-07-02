@@ -7,8 +7,8 @@ import './header.css';
 export default (props) => {
   return (
     <header>
-      <GeoPicker cityName={props.cityName} searchCity={props.searchCity} />
-      <ProviderPicker default={props.provider} onChange={props.onChange} />
+      <GeoPicker cityName={props.cityName} handleInput={props.handleInput} getCity={props.getCity} />
+      <ProviderPicker default={props.provider} handleInput={props.handleInput} />
     </header>
   )
 }

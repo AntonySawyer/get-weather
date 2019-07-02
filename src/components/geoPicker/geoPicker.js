@@ -7,8 +7,9 @@ export default (props) => {
       <p><i className="fas fa-map-marked-alt"></i> {props.cityName}</p>
       <div className="joinInput">
         <input type="text" id="locationSearch" placeholder="Or type..." />
-        <button onClick={() => props.searchCity()}><i className="fas fa-search-location"></i></button>
+        <button onClick={() => props.handleInput('cityName', '#locationSearch')}><i className="fas fa-search-location"></i></button>
       </div>
+      <button onClick={() => props.getCity()}>Auto detect</button>
     </section>
   )
 }
