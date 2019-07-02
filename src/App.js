@@ -1,5 +1,7 @@
 import React from 'react';
 
+import * as Provider from './utils/credentials';
+import processData from './utils/processData';
 import Header from './components/Header/Header';
 import WeatherScreen from './components/weatherScreen/weatherScreen';
 import './App.css';
@@ -8,21 +10,22 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cityName: localStorage.getItem('cityName'),
+      cityName: '???',
       provider: localStorage.getItem('provider') || 'owm',
-      weather: localStorage.getItem('weather').split(',') || [0,0,0,0,0]
+      weather: new Array(5).fill('?')
     }
   }
 
   componentDidMount() {
     const cityFromStorage = localStorage.getItem('cityName');
-    const timeFromSorage = localStorage.getItem('lastLogin');
+    const timeFromStorage = localStorage.getItem('lastLogin');
     const currTime = Date.now();
-    const timeDiff = (new Date(timeFromSorage) - new Date(currTime)) / 1000 / 60 / 60;
+    const timeDiff = (new Date(currTime) - new Date(Number(timeFromStorage))) / 1000 / 60 / 60;
     if (cityFromStorage === null || timeDiff > 2) {
+      this.setState({ cityName: '???', weather: new Array(5).fill('?')})
       this.getCity();
     } else {
-      this.setState({ cityName: cityFromStorage });
+      this.setState({ cityName: cityFromStorage, weather: localStorage.getItem('weather').split(',') });
     }
     this.setLocalStorage('lastLogin', currTime);
   }
@@ -49,43 +52,17 @@ export default class App extends React.Component {
       });
   }
 
-  getWeather(provider = this.state.provider) {
-    const owmKey = '51835371b1252869b2e89700df1cdbba';
-    const wbKey = '51b2268802424671a8d742c3c2e15eaf'
-    const endpoint = provider === 'owm' 
-      ? `http://api.openweathermap.org/data/2.5/weather?q=${this.state.cityName}&appid=${owmKey}&units=metric`
-      : `http://api.weatherbit.io/v2.0/current?city=${this.state.cityName}&key=${wbKey}`;
+  getWeather(provider = this.state.provider, cityName = this.state.cityName) {
+    const endpoint = (provider === 'owm') 
+      ? `${Provider.owm.url}${cityName}${Provider.owm.apiKey}${Provider.owm.settings}`
+      : `${Provider.wb.url}${cityName}${Provider.wb.apikey}`;
     fetch(endpoint)
       .then(rs => rs.json())
       .then(data => {
-        this.processRS(data, provider);
+        const newWeather = processData(data, provider);
+        this.setState({ weather: newWeather });
+        this.setLocalStorage('weather', newWeather);
       });
-  }
-
-  processRS(data, provider) {
-    let temp, pressure, sunrise, sunset, sky;
-    console.log(data);
-    switch (provider) {
-      case 'wb':
-        temp = data.data[0].temp;
-        pressure = data.data[0].pres;
-        sunrise = data.data[0].sunrise;
-        sunset = data.data[0].sunset;
-        sky = data.data[0].weather.description;
-        break;
-      case 'owm':
-        temp = data.main.temp;
-        pressure = data.main.pressure;
-        sunrise = data.sys.sunrise;
-        sunset = data.sys.sunset;
-        sky = data.weather[0].description;
-      break;
-      default:
-        break;
-    }
-    const weatherRS = [temp, pressure, sunrise, sunset, sky];
-    this.setState({ weather: weatherRS });
-    this.setLocalStorage('weather', weatherRS);
   }
 
   changeProvider() {
@@ -95,11 +72,23 @@ export default class App extends React.Component {
     this.getWeather(target);
   }
 
+  searchCity() {
+    const newCity = document.querySelector('#locationSearch').value;
+    this.setState({cityName: newCity});
+    this.setLocalStorage('cityName', newCity);
+    this.getWeather(this.state.provider, newCity);
+  }
+
   render() {
     return (
       <div className="wrapper">
-        <Header cityName={this.state.cityName} onChange={this.changeProvider.bind(this)} />
-        <WeatherScreen weather={this.state.weather} />
+        <Header cityName={this.state.cityName} 
+          onChange={this.changeProvider.bind(this)} 
+          searchCity={this.searchCity.bind(this)} 
+          provider={this.state.provider} />
+        <main>
+          <WeatherScreen weather={this.state.weather} />
+        </main>
       </div>
     )
   }  
