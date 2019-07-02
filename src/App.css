@@ -1,24 +1,136 @@
 .wrapper {
   display: flex;
   margin: 0 auto;
-  flex-flow:  column wrap; 
+  flex-flow:  column; 
   flex-direction: column;
   align-items: center;
   width: 100vw;
   height: 100vh;
 }
 
+main {
+  width: 100%;
+}
+
+@media screen and (orientation:landscape) {
+  /* for any landscape */
+  header {
+    flex-direction: column;
+  }
+  .geoPicker {
+    flex-direction: column;
+  }
+  .geoPicker p {
+    font-size: 7vh;
+  }
+}
+
 @media only screen and (min-width: 600px) {
   /* For tablets: */
   .wrapper {
     width: 80vw;
-    max-width: 360px;
+  }
+  header {
+    font-size: 2vh;
+    justify-content: space-around;
+  }
+  .geoPicker input[type="text"] {
+    max-width: 100%;
+  }
+  header > section > p,
+  header > section > label > i {
+    font-size: 4vh;
+    line-height: 0;
+  }
+  .weatherWrap p {
+    font-size: 3vh;
+  }
+  .weatherWrap i {
+    font-size: 13vh;
+  }
+  .geoPicker button i {
+    font-size: 3vh;
+  }
+  .geoPicker input[type="text"],
+  .providerPicker select {
+    font-size: 2vh;
   }
 }
+
+@media screen and (orientation:landscape) and (max-height:768px) {
+  /* For mobile and tablets in landscape */
+  .wrapper {
+    flex-direction: row-reverse;
+    max-width: 100%;
+  }
+  header {
+    align-items: center;
+    font-size: 8vh;
+    line-height: 0;
+  }
+  .geoPicker {
+    margin-bottom: 10vh;
+    align-items: center;
+  }
+  .geoPicker input[type="text"] {
+    max-width: 100%;
+  }
+  .geoPicker button i {
+    font-size: 5vh;
+  }
+  .geoPicker input[type="text"],
+  .providerPicker select {
+    font-size: 4vh;
+  }
+  .weatherWrap p {
+    font-size: 4vh;
+  }
+  .weatherWrap i {
+    font-size: 15vh;
+  }
+}
+
 @media only screen and (min-width: 1024px) {
   /* For desktop: */
   .wrapper {
-    width: 25vw;
-    max-width: 480px;
+    width: 90vw;
+  }
+  header {
+    align-items: center;
+  }
+}
+
+@media only screen and (min-width: 1360px) and (orientation:landscape) {
+  /* For big horisontal displays: */
+  .wrapper {
+    width: 90vw;
+  }
+  header {
+    align-items: center;
+    flex-direction: row;
+  }
+  .geoPicker {
+    flex-direction: row;
+  }
+  .geoPicker p {
+    margin: 15px 0 10px 0;
+  }
+  .providerPicker select {
+    font-size: 3vh;
+  }
+  .joinInput {
+    margin-left: 20px;
+  }
+  .weatherWrap p {
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+@media only screen and (min-width: 1360px) and (max-height: 768px) {
+  /* For laptops: */
+  header,
+  .geoPicker {
+    flex-direction: column;
   }
 }

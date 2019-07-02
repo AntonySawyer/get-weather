@@ -1,0 +1,33 @@
+.geoPicker {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.joinInput {
+  display: inline-block;
+  position: relative;
+  max-width: 65vw;
+}
+
+.joinInput input[type="text"] {
+  font-size: 16px;
+  max-width: 140px;
+}
+
+.joinInput button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.joinInput button:hover {
+  cursor: pointer;
+}
+
+.joinInput button i {
+  font-size: 19px;
+}
