@@ -14,7 +14,9 @@ export default class App extends React.Component {
       cityName: '???',
       provider: localStorage.getItem('provider') || 'owm',
       weather: new Array(5).fill('?')
-    }
+    };
+    this.handleInput = this.handleInput.bind(this);
+    this.getCity = this.getCity.bind(this);
   }
 
   componentDidMount() {
@@ -83,30 +85,33 @@ export default class App extends React.Component {
   }
 
   handleInput(key, selector) {
-    this.storeValues([
-      ['weather', new Array(5).fill('?')]
-    ]);
     const el = document.querySelector(selector);
-    this.storeValues([[key, el.value]]);
-    if (key === 'provider') {
-      this.getWeather(el.value);      
-    } else {
-      this.getWeather(this.state.provider, el.value);
-      el.value = '';
+    const inputValue = el.value;
+    if (inputValue !== '') {
+      this.storeValues([
+        ['weather', new Array(5).fill('?')],
+        [key, inputValue]
+      ]);
+      if (key === 'provider') {
+        this.getWeather(inputValue);
+      } else {
+        this.getWeather(this.state.provider, inputValue);
+        el.value = '';
+      }
     }
   }
 
   render() {
     return (
       <div className="wrapper">
-        <Header cityName={this.state.cityName} 
-          handleInput={this.handleInput.bind(this)} 
-          provider={this.state.provider} 
-          getCity={this.getCity.bind(this)} />
+        <Header cityName={this.state.cityName}
+          handleInput={this.handleInput}
+          provider={this.state.provider}
+          getCity={this.getCity} />
         <main>
           <WeatherScreen weather={this.state.weather} />
         </main>
       </div>
     )
-  }  
+  }
 }
