@@ -9,17 +9,3 @@ body {
   animation: background 15s cubic-bezier(0.1, 0.7, 1.0, 0.1) infinite;  
 
 }
-
-@-webkit-keyframes background {
-  0% { background-color: rgb(161, 190, 243); }
-  33% { background-color: rgb(128, 250, 128); }  
-  67% { background-color: rgb(153, 255, 250); }
-  100% { background-color: rgb(161, 190, 243); }
-}
-
-@keyframes background {
-  0% { background-color: rgb(161, 190, 243); }
-  33% { background-color: rgb(128, 250, 128); }  
-  67% { background-color: rgb(153, 255, 250); }
-  100% { background-color: rgb(161, 190, 243); }
-}

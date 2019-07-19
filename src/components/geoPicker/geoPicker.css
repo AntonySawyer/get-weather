@@ -5,6 +5,10 @@
   justify-content: space-between;
 }
 
+.geoPicker > p {
+  text-transform: capitalize;
+}
+
 .joinInput {
   display: inline-block;
   position: relative;

@@ -15,8 +15,6 @@ export default class App extends React.Component {
       provider: localStorage.getItem('provider') || 'owm',
       weather: new Array(5).fill('?')
     };
-    this.handleInput = this.handleInput.bind(this);
-    this.getCity = this.getCity.bind(this);
   }
 
   componentDidMount() {
@@ -33,24 +31,20 @@ export default class App extends React.Component {
     this.storeValues([['lastLogin', currTime]]);
   }
 
-  getCity() {
+  getCity = () => {
     this.storeValues([
       ['cityName', '???'],
       ['weather', new Array(5).fill('?')]
     ]);
     fetch('https://api.ipify.org/?format=json')
       .then(rs => rs.json())
-      .then(data => {
-        fetch(`https://ipapi.co/${data.ip}/json/`)
-          .then(rs => rs.json())
-          .then(data => {
-            this.storeValues([['cityName', `${data.city},${data.country}`]]);
-          })
-          .then(() => this.getWeather() )
-          .catch(error => {
-            console.error(error);
-            return null;
-          })
+      .then(data => fetch(`https://ipapi.co/${data.ip}/json/`))
+      .then(rs => rs.json())
+      .then(data => this.storeValues([['cityName', `${data.city},${data.country}`]]))
+      .then(() => this.getWeather())
+      .catch(error => {
+        console.error(error);
+        return null;
       });
   }
 
@@ -84,7 +78,7 @@ export default class App extends React.Component {
     });
   }
 
-  handleInput(key, selector) {
+  handleInput = (key, selector) => {
     const el = document.querySelector(selector);
     const inputValue = el.value;
     if (inputValue !== '') {

@@ -1,6 +1,4 @@
-import timeConvert from './timeConvert';
-
-export default (data, provider) =>{
+export default (data, provider) => {
   let temp, pressure, sunrise, sunset, sky;
   switch (provider) {
     case 'wb':
@@ -13,8 +11,8 @@ export default (data, provider) =>{
     case 'owm':
       temp = data.main.temp;
       pressure = data.main.pressure;
-      sunrise = timeConvert(data.sys.sunrise * 1000);
-      sunset = timeConvert(data.sys.sunset * 1000);
+      sunrise = convertUnixTime(data.sys.sunrise * 1000);
+      sunset = convertUnixTime(data.sys.sunset * 1000);
       sky = data.weather[0].description;
       break;
     default:
@@ -22,3 +20,5 @@ export default (data, provider) =>{
   }
   return [temp, pressure, sunrise, sunset, sky];
 }
+
+const convertUnixTime = unixDate => new Date(unixDate).toTimeString().split(':').filter(i => i.length === 2).join(':');
