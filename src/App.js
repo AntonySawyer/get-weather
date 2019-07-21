@@ -3,6 +3,7 @@ import React from 'react';
 import * as Provider from './utils/credentials';
 import processData from './utils/processData';
 import needUpdate from './utils/needUpdate';
+import geoByIP from './utils/geoByIP';
 import Header from './components/Header/Header';
 import WeatherScreen from './components/weatherScreen/weatherScreen';
 import './App.css';
@@ -13,8 +14,11 @@ export default class App extends React.Component {
     this.state = {
       cityName: '???',
       provider: localStorage.getItem('provider') || 'owm',
-      weather: new Array(5).fill('?')
+      weather: new Array(5).fill('?'),
+      latitude: '',
+      longitude: ''
     };
+    this.getEndpoint = this.getEndpoint.bind(this);
   }
 
   componentDidMount() {
@@ -36,27 +40,46 @@ export default class App extends React.Component {
       ['cityName', '???'],
       ['weather', new Array(5).fill('?')]
     ]);
-    fetch('https://api.ipify.org/?format=json')
-      .then(rs => rs.json())
-      .then(data => fetch(`https://ipapi.co/${data.ip}/json/`))
-      .then(rs => rs.json())
-      .then(data => this.storeValues([['cityName', `${data.city},${data.country}`]]))
-      .then(() => this.getWeather())
-      .catch(error => {
-        console.error(error);
-        return null;
-      });
+    const locationApprove = (position) => {
+      this.storeValues([
+        ['latitude', position.coords.latitude],
+        ['longitude', position.coords.longitude]
+      ]);
+      this.getWeather();
+    };
+    const locationDenied = () => {
+      this.storeValues(geoByIP());
+      this.getWeather();
+    }
+    navigator.geolocation.getCurrentPosition(locationApprove, locationDenied);
   }
 
-  getWeather(provider = this.state.provider, cityName = this.state.cityName) {
-    const endpoint = (provider === 'owm') 
-      ? `${Provider.owm.url}${cityName}${Provider.owm.apiKey}${Provider.owm.settings}`
-      : `${Provider.wb.url}${cityName}${Provider.wb.apikey}`;
+  getEndpoint (provider = this.state.provider, cityName = false) {
+    if (cityName) {
+      const endpoint = (provider === 'owm')
+      ? `${Provider.owm.url}q=${cityName}${Provider.owm.apiKey}${Provider.owm.settings}`
+      : `${Provider.wb.url}city=${cityName}${Provider.wb.apikey}`;
+      return endpoint;
+    } else {
+      const endpoint = (provider === 'owm')
+        ? `${Provider.owm.url}&lat=${this.state.latitude}&lon=${this.state.longitude}${Provider.owm.apiKey}${Provider.owm.settings}`
+        : `${Provider.wb.url}&lat=${this.state.latitude}&lon=${this.state.longitude}${Provider.wb.apikey}`;
+      return endpoint;
+    }
+  }
+
+  getWeather(provider = this.state.provider, cityName) {
+    const endpoint = this.getEndpoint(provider, cityName);
     fetch(endpoint)
       .then(rs => rs.json())
       .then(data => {
         const newWeather = processData(data, provider);
-        this.storeValues([['weather', newWeather]]);
+        this.storeValues([
+          ['weather', newWeather], 
+          ['cityName', provider === 'owm' ? data.name : data.data[0].city_name],
+          ['latitude', provider === 'owm' ? data.coord.lat : data.data[0].lat],
+          ['longitude', provider === 'owm' ? data.coord.lon : data.data[0].lon]
+        ]);
       })
       .catch(error => {
         console.error(error);
@@ -69,9 +92,9 @@ export default class App extends React.Component {
   }
 
   storeValues(arr) {
-    const saveToLocal = ['weather', 'provider', 'cityName', 'lastLogin'];
+    const saveToLocal = ['weather', 'provider', 'cityName', 'lastLogin', 'longitude', 'latitude'];
     arr.forEach(pair => {
-      this.state[pair[0]] && this.setState({ [pair[0]]: pair[1] });
+      this.setState({ [pair[0]]: pair[1] });
       if (saveToLocal.includes(pair[0])) {
         localStorage.setItem(pair[0], pair[1]);
       }
