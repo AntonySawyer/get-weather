@@ -1,37 +1,38 @@
 .geoPicker {
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
 }
 
 .geoPicker > p {
   text-transform: capitalize;
+  font-size: 24px;
+  margin: 0;
 }
 
 .joinInput {
   display: inline-block;
   position: relative;
   max-width: 65vw;
+  margin: 3px;
 }
 
 .joinInput input[type="text"] {
   font-size: 16px;
-  max-width: 140px;
+  width: 100%;
+  max-width: 180px;
 }
 
-.joinInput button {
+.geoPicker > button {
+  border: 1px #bdbdbd solid;
+}
+
+.joinInput > button {
   position: absolute;
   right: 0;
   top: 0;
-  background-color: transparent;
-  border: none;
+  height: 100%;
+  border-left: 1px solid gray;
 }
 
-.joinInput button:hover {
-  cursor: pointer;
-}
-
-.joinInput button i {
-  font-size: 19px;
-}

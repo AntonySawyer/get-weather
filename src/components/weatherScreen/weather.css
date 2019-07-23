@@ -1,18 +1,9 @@
-.weatherWrap {
-  margin-top: 30px;
-}
-
 .weatherWrap p {
   display: flex;
   justify-content: space-around;
 }
 
-.weatherText {
+.temperature {
+  font-size: 32px;
   font-weight: bold;
-  max-width: 50vw;
-  text-align: right;
-}
-
-.weatherWrap i {
-  font-size: 55px;
 }

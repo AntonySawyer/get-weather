@@ -68,15 +68,16 @@ export default class App extends React.Component {
     }
   }
 
-  getWeather(provider = this.state.provider, cityName) {
+  getWeather = (provider = this.state.provider, cityName) => {
     const endpoint = this.getEndpoint(provider, cityName);
     fetch(endpoint)
       .then(rs => rs.json())
       .then(data => {
         const newWeather = processData(data, provider);
+        console.log(data);
         this.storeValues([
           ['weather', newWeather], 
-          ['cityName', provider === 'owm' ? data.name : data.data[0].city_name],
+          ['cityName', provider === 'owm' ? `${data.name}, ${data.sys.country}` : `${data.data[0].city_name}, ${ data.data[0].country_code}`],
           ['latitude', provider === 'owm' ? data.coord.lat : data.data[0].lat],
           ['longitude', provider === 'owm' ? data.coord.lon : data.data[0].lon]
         ]);
@@ -91,7 +92,7 @@ export default class App extends React.Component {
       });
   }
 
-  storeValues(arr) {
+  storeValues = (arr) => {
     const saveToLocal = ['weather', 'provider', 'cityName', 'lastLogin', 'longitude', 'latitude'];
     arr.forEach(pair => {
       this.setState({ [pair[0]]: pair[1] });
