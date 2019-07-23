@@ -5,10 +5,11 @@ import ProviderPicker from '../providerPicker/providerPicker';
 import './header.css';
 
 export default (props) => {
+  const { provider, handleInput, ...geoProps} = props;
   return (
     <header>
-      <GeoPicker cityName={props.cityName} handleInput={props.handleInput} getCity={props.getCity} />
-      <ProviderPicker default={props.provider} handleInput={props.handleInput} />
+      <GeoPicker handleInput={handleInput} { ...geoProps} />
+      <ProviderPicker handleInput={handleInput} {...provider} />
     </header>
   )
 }

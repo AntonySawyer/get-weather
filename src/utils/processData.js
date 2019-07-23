@@ -1,24 +1,13 @@
 export default (data, provider) => {
-  let temp, pressure, sunrise, sunset, sky;
   switch (provider) {
     case 'wb':
-      temp = data.data[0].temp;
-      pressure = data.data[0].pres;
-      sunrise = data.data[0].sunrise;
-      sunset = data.data[0].sunset;
-      sky = data.data[0].weather.description;
-      break;
+      const wObj = data.data[0];
+      return [wObj.temp, wObj.pres, wObj.sunrise, wObj.sunset, wObj.description ];
     case 'owm':
-      temp = data.main.temp;
-      pressure = data.main.pressure;
-      sunrise = convertUnixTime(data.sys.sunrise * 1000);
-      sunset = convertUnixTime(data.sys.sunset * 1000);
-      sky = data.weather[0].description;
-      break;
+      return [data.main.temp, data.main.pressure, convTime(data.sys.sunrise), convTime(data.sys.sunset), data.weather[0].description];
     default:
-      break;
+      return ['?', '?', '?', '?', '?'];
   }
-  return [temp, pressure, sunrise, sunset, sky];
 }
 
-const convertUnixTime = unixDate => new Date(unixDate).toTimeString().split(':').filter(i => i.length === 2).join(':');
+const convTime = unixDate => new Date(unixDate*1000).toTimeString().split(':').filter(i => i.length === 2).join(':');

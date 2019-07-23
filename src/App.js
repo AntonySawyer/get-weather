@@ -18,7 +18,6 @@ export default class App extends React.Component {
       latitude: localStorage.getItem('latitude') || '',
       longitude: localStorage.getItem('longitude') || ''
     };
-    this.getEndpoint = this.getEndpoint.bind(this);
   }
 
   componentDidMount() {
@@ -54,7 +53,7 @@ export default class App extends React.Component {
     navigator.geolocation.getCurrentPosition(locationApprove, locationDenied);
   }
 
-  getEndpoint (provider = this.state.provider, cityName = false) {
+  getEndpoint = (provider = this.state.provider, cityName = false) => {
     if (cityName) {
       const endpoint = (provider === 'owm')
       ? `${Provider.owm.url}q=${cityName}${Provider.owm.apiKey}${Provider.owm.settings}`
@@ -74,7 +73,6 @@ export default class App extends React.Component {
       .then(rs => rs.json())
       .then(data => {
         const newWeather = processData(data, provider);
-        console.log(data);
         this.storeValues([
           ['weather', newWeather], 
           ['cityName', provider === 'owm' ? `${data.name}, ${data.sys.country}` : `${data.data[0].city_name}, ${ data.data[0].country_code}`],
