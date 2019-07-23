@@ -15,8 +15,8 @@ export default class App extends React.Component {
       cityName: '???',
       provider: localStorage.getItem('provider') || 'owm',
       weather: new Array(5).fill('?'),
-      latitude: '',
-      longitude: ''
+      latitude: localStorage.getItem('latitude') || '',
+      longitude: localStorage.getItem('longitude') || ''
     };
     this.getEndpoint = this.getEndpoint.bind(this);
   }
