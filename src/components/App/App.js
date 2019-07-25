@@ -1,11 +1,13 @@
 import React from 'react';
 
-import * as Provider from './utils/credentials';
-import processData from './utils/processData';
-import needUpdate from './utils/needUpdate';
-import geoByIP from './utils/geoByIP';
-import Header from './components/Header/Header';
-import WeatherScreen from './components/weatherScreen/weatherScreen';
+import Header from '../Header';
+import WeatherScreen from '../weatherScreen';
+
+import * as Provider from '../../utils/credentials';
+import processData from '../../utils/processData';
+import needUpdate from '../../utils/needUpdate';
+// import geoByIP from '../../utils/geoByIP';
+
 import './App.css';
 
 export default class App extends React.Component {
@@ -47,8 +49,21 @@ export default class App extends React.Component {
       this.getWeather();
     };
     const locationDenied = () => {
-      this.storeValues(geoByIP());
-      this.getWeather();
+        alert('Geolocation was denied by you or is not supported by this browser. We try detect city by IP.');
+        fetch('https://api.ipify.org/?format=json')
+          .then(rs => rs.json())
+          .then(data => fetch(`https://ipapi.co/${data.ip}/json/`))
+          .then(rs => rs.json())
+          .then(data => {
+            this.storeValues([
+              ['longitude', `${data.longitude}`],
+              ['latitude', `${data.latitude}`]]);
+            this.getWeather();
+          })
+          .catch(error => {
+            console.error(error);
+            return null;
+          });
     }
     navigator.geolocation.getCurrentPosition(locationApprove, locationDenied);
   }

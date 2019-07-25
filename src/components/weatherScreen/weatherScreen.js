@@ -1,5 +1,5 @@
 import React from 'react';
-import './weather.css';
+import './weatherScreen.css';
 
 export default (props) => {
   return (
